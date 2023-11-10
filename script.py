@@ -97,6 +97,24 @@ async def stop_server(interaction: discord.Interaction):
         return
 
 
+@bot.tree.command(name="testtp", description="Stop server")
+async def stop_server(interaction: discord.Interaction):
+    DEV = os.getenv("DEV_MINECRAFT_USERNAME")
+    await interaction.channel.send("Fetching server status...")
+    isRunning = await status()
+    if not isRunning:
+        await interaction.channel.send("Le serveur n'a pas été lancé !")
+        return
+    else:
+        await interaction.channel.send("Teleporting {}...".format(DEV))
+        os.system(
+            "screen -S minecraft -p 0 -X stuff {}`echo '\015'`".format(
+                "'/tp {} 100 100 100'".format(DEV)
+            )
+        )
+        return
+
+
 guilds = []
 
 
