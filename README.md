@@ -5,6 +5,7 @@ Discord Bot that allows modifications to be made on a minecraft server on the fl
 - [X] Start the Server + ngrok script
 - [X] Stop the Server and the ngrok script
 - [ ] Save and access map coordinates for quick and easy TP
+    - [X] tp test command available
 - [ ] manage server admins and authorizations
 
 Nota Bene :
