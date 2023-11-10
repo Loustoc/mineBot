@@ -58,17 +58,25 @@ async def status():
 
 @bot.tree.command(name="start_server", description="Start server")
 async def start_server(interaction: discord.Interaction):
-    startNgrok = subprocess.Popen("ngrok tcp 25565 >/dev/null", shell=True)
-    await interaction.channel.send("Fetching server information...")
-    address = await listenPort()
-    address = address[slice(6, len(address))]
-    await interaction.channel.send(address)
-    launchserv_cmd = 'cd {} && screen -dmS "minecraft" java -Xmx1024M -Xms1024M -jar server.jar nogui'.format(
-        os.getenv("SERVER_PATH")
-    )
-    print("launching server")
-    startServ = subprocess.Popen(launchserv_cmd, shell=True)
-    return
+    await interaction.response.defer(ephemeral=True)
+    await interaction.followup.send("Checking server status...")
+    isRunning = await status()
+    if not isRunning:
+        await interaction.followup.send("No server instance found, starting...")
+        startNgrok = subprocess.Popen("ngrok tcp 25565 >/dev/null", shell=True)
+        address = await listenPort()
+        await interaction.followup.send("Sending public server url")
+        address = address[slice(6, len(address))]
+        await interaction.channel.send(address)
+        launchserv_cmd = 'cd {} && screen -dmS "minecraft" java -Xmx1024M -Xms1024M -jar server.jar nogui'.format(
+            os.getenv("SERVER_PATH")
+        )
+        print("launching server")
+        startServ = subprocess.Popen(launchserv_cmd, shell=True)
+        return
+    else:
+        await interaction.followup.send("Server already running !")
+        return
 
 
 @bot.tree.command(
@@ -86,24 +94,26 @@ async def sync_command_tree(interaction: discord.Interaction):
 
 @bot.tree.command(name="stop_server", description="Stop server")
 async def stop_server(interaction: discord.Interaction):
-    await interaction.channel.send("Fetching server status...")
+    await interaction.response.defer(ephemeral=True)
+    await interaction.followup.send("Checking server status...")
     isRunning = await status()
     if not isRunning:
-        await interaction.channel.send("Le serveur n'a pas été lancé !")
+        await interaction.followup.send("Le serveur n'a pas été lancé !")
         return
     else:
-        await interaction.channel.send("Stopping server...")
+        await interaction.followup.send("Stopping Server...")
         os.system("screen -S minecraft -p 0 -X stuff stop`echo '\015'`")
         return
 
 
-@bot.tree.command(name="testtp", description="Stop server")
-async def stop_server(interaction: discord.Interaction):
+@bot.tree.command(name="testtp", description="Testing /TP")
+async def save_location(interaction: discord.Interaction):
     DEV = os.getenv("DEV_MINECRAFT_USERNAME")
+    await interaction.response.defer(ephemeral=True)
     await interaction.channel.send("Fetching server status...")
     isRunning = await status()
     if not isRunning:
-        await interaction.channel.send("Le serveur n'a pas été lancé !")
+        await interaction.followup.send("Le serveur n'a pas été lancé !")
         return
     else:
         await interaction.channel.send("Teleporting {}...".format(DEV))
@@ -113,6 +123,11 @@ async def stop_server(interaction: discord.Interaction):
             )
         )
         return
+
+
+@bot.tree.command(name="save_location", description="Saving Location information")
+async def save_location(interaction: discord.Interaction, raccourci_gps: str):
+    return
 
 
 guilds = []
