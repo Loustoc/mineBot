@@ -104,7 +104,7 @@ class Guild:
     def __init__(self, name, id, members):
         self.name = name
         self.id = id
-        self.members = members
+        self.members = {"name": members.name, "role": members.role}
 
 
 @bot.event
@@ -116,10 +116,22 @@ async def on_ready():
     except Exception as e:
         print(e)
     else:
-        print(bot.guilds)
+        # print(bot.guilds)
         for guild in bot.guilds:
-            _guild = Guild(guild, guild.id, guild.members)
-            guilds.append(_guild)
+            members = []
+            _member = {"name": "", "role": ""}
+
+            def isMineRole(role):
+                bool = role.name.startswith("mine:")
+                return bool
+
+            for user in guild.members:
+                print(user)
+                print(user.roles)
+                roles = list(filter(isMineRole, user.roles))
+                print(roles)
+            # _guild = Guild(guild, guild.id, members)
+            # guilds.append(_guild)
             print("appended guild", guild)
         print(guilds)
 
