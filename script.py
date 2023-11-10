@@ -97,6 +97,16 @@ async def stop_server(interaction: discord.Interaction):
         return
 
 
+guilds = []
+
+
+class Guild:
+    def __init__(self, name, id, members):
+        self.name = name
+        self.id = id
+        self.members = members
+
+
 @bot.event
 async def on_ready():
     print("We have logged in as {0.user}".format(bot))
@@ -105,6 +115,27 @@ async def on_ready():
         print(synced)
     except Exception as e:
         print(e)
+    else:
+        print(bot.guilds)
+        for guild in bot.guilds:
+            _guild = Guild(guild, guild.id, guild.members)
+            guilds.append(_guild)
+            print("appended guild", guild)
+        print(guilds)
+
+
+@bot.event
+async def on_message(message):
+    member = message.author
+    print(member)
+    guild = message.guild
+    for g in guilds:
+        if g.name == guild:
+            for user in guild.members:
+                print(user, member)
+                if member == user:
+                    print("user found dans la class")
+                    break
 
 
 bot.run(os.getenv("TOKEN"))
