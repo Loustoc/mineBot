@@ -10,3 +10,6 @@ Discord Bot that allows modifications to be made on a minecraft server on the fl
 
 Nota Bene :
 -  Role Handling : will ignore roles except for "mine:XXXXX"
+
+### Notes
+- if you have issues installing pycURL on Windows (getting ``Please specify --curl-dir=/path/to/built/libcurl``), check [this link](https://github.com/pycurl/pycurl/issues/657)
