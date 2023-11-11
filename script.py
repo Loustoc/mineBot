@@ -63,7 +63,7 @@ async def start_server(interaction: discord.Interaction):
     address = await listenPort()
     address = address[slice(6, len(address))]
     await interaction.channel.send(address)
-    launchserv_cmd = 'cd {} && screen -dmS "minecraft" java -Xmx1024M -Xms1024M -jar server.jar nogui'.format(
+    launchserv_cmd = 'cd {} && screen -dmS "minecraft" java -Xmx4096M -Xms4096M -jar server.jar nogui'.format(
         os.getenv("SERVER_PATH")
     )
     print("launching server")
